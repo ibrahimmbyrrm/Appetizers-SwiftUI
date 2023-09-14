@@ -12,20 +12,37 @@ struct AppetizerListView: View {
     @StateObject var viewModel = AppetizerListViewModel()
     
     var body: some View {
-        NavigationStack {
-            List(viewModel.appetizers, id: \.id, rowContent: { appetizer in
-                AppetizerListCell(appetizer: appetizer)
-            })
-            .navigationTitle(Text("🍟 Appetizers"))
+        ZStack {
+            NavigationStack {
+                List(viewModel.appetizers, id: \.id, rowContent: { appetizer in
+                    AppetizerListCell(appetizer: appetizer)
+                        .onTapGesture {
+                            viewModel.selectedAppetizer = appetizer
+                        }
+                })
+                .disabled(viewModel.isShowingDetail)
+                .navigationTitle(Text("🍟 Appetizers"))
+            }
+            .onAppear() {
+                viewModel.getAppetizers()
+            }
+            
+            .blur(radius: viewModel.isShowingDetail ? 20 : 0)
+            if viewModel.isShowingDetail {
+                AppetizerDetail(selectedAppetizer: viewModel.selectedAppetizer,isShowingDetail: $viewModel.isShowingDetail)
+            }
+            
+            if viewModel.isLoading {
+                LoadingView()
+            }
         }
         .alert(item: $viewModel.alertItem) { alertItem in
             Alert(title: alertItem.title, message: alertItem.description, dismissButton: alertItem.dismissButton)
         }
-        .onAppear() {
-            viewModel.getAppetizers()
-        }
     }
+    
 }
+
 
 struct AppetizerListView_Previews: PreviewProvider {
     static var previews: some View {

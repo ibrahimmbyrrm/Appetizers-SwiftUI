@@ -10,7 +10,7 @@ import Foundation
 struct FoodResponse : Codable {
     let request : [Food]
 }
-struct Food : Codable, Identifiable {
+struct Food : Codable, Identifiable, Hashable {
     let id : Int
     let name : String
     let price : Double
