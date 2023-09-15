@@ -19,10 +19,10 @@ struct AppetizerListView: View {
                         .onTapGesture {
                             viewModel.selectedAppetizer = appetizer
                         }
-                })
+                })//List
                 .disabled(viewModel.isShowingDetail)
                 .navigationTitle(Text("🍟 Appetizers"))
-            }
+            }//NavigationStack
             .onAppear() {
                 viewModel.getAppetizers()
             }
@@ -35,7 +35,7 @@ struct AppetizerListView: View {
             if viewModel.isLoading {
                 LoadingView()
             }
-        }
+        }//ZStack
         .alert(item: $viewModel.alertItem) { alertItem in
             Alert(title: alertItem.title, message: alertItem.description, dismissButton: alertItem.dismissButton)
         }

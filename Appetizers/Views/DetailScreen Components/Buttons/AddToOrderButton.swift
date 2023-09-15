@@ -9,10 +9,10 @@ import SwiftUI
 
 struct AddToOrderButton : View {
     
-    var price : Double
+    var title : String
     
     var body: some View {
-        Text("$\(price, specifier: "%.2f") - Add to Order")
+        Text(title)
             .foregroundColor(.white)
             .fontWeight(.semibold)
             .frame(width: 260, height: 50)

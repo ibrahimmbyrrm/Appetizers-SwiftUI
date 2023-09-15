@@ -17,30 +17,32 @@ struct AccountView: View {
             Form {
                 //MARK: - Personal Info Section
                 Section("Personal Info") {
-                    TextField("First Name", text: $viewModel.firstName)
-                    TextField("Last Name", text: $viewModel.lastName)
-                    TextField("Email", text: $viewModel.email)
+                    TextField("First Name", text: $viewModel.user.firstName)
+                    TextField("Last Name", text: $viewModel.user.lastName)
+                    TextField("Email", text: $viewModel.user.email)
                         .keyboardType(.emailAddress)
                         .autocorrectionDisabled()
                         .textInputAutocapitalization(.never)
-                    DatePicker("Birthday", selection: $viewModel.birthday, displayedComponents: .date)
+                    DatePicker("Birthday", selection: $viewModel.user.birthday, displayedComponents: .date)
                     Button {
-                        let _ = viewModel.isValidForm
+                        viewModel.saveChanges()
                     } label: {
                         Text("Save Changes")
                             .foregroundColor(.brandPrimary)
-                    }
-                }
+                    }//Button-Label
+                }//Section
                 //MARK: - Requests Section
                 Section("Requests") {
-                    Toggle("Extra Napkins", isOn: $viewModel.isExtraNapkinsNeeded)
+                    Toggle("Extra Napkins", isOn: $viewModel.user.isExtraNapkinsNeeded)
                         .tint(.brandPrimary)
-                    Toggle("Frequent Refills",isOn: $viewModel.isFrequentRefillsNeeded)
+                    Toggle("Frequent Refills",isOn: $viewModel.user.isFrequentRefillsNeeded)
                         .tint(.brandPrimary)
-                }
-                
-            }
+                }//Section
+            }//Form
             .navigationTitle(Text("👤 Account"))
+        }//NavigationStack
+        .onAppear() {
+            viewModel.retrieveUser()
         }
         .alert(item: $viewModel.alertItem) { alertItem in
             Alert(title: alertItem.title, message: alertItem.description, dismissButton: alertItem.dismissButton)
