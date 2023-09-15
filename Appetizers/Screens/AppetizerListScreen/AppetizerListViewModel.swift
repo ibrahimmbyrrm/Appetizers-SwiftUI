@@ -20,18 +20,17 @@ final class AppetizerListViewModel : ObservableObject {
     }
     @Published var isShowingDetail = false
     
-    func getAppetizers() {
+
+    func getAppetizerList() {
         isLoading = true
-        NetworkManager.shared.fetchAppetizers { result in
-            DispatchQueue.main.async {
-                self.isLoading = false
-                switch result {
-                case .success(let appetizerList):
-                    DispatchQueue.main.async {
-                        self.appetizers = appetizerList
-                    }
-                case .failure(let error):
-                    switch error {
+        
+        Task {
+            do {
+                appetizers = try await NetworkManager.shared.fetchData(type: FoodResponse.self).request
+                isLoading = false
+            }catch {
+                if let networkError = error as? NetworkError {
+                    switch networkError {
                     case .invalidData:
                         self.alertItem = AlertContext.invalidData
                     case .invalidResponse:
@@ -41,7 +40,10 @@ final class AppetizerListViewModel : ObservableObject {
                     case .unabletoComplete:
                         self.alertItem = AlertContext.unableToComplete
                     }
+                }else {
+                    alertItem = AlertContext.invalidResponse
                 }
+                isLoading = false
             }
         }
     }

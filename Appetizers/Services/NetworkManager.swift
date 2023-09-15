@@ -14,32 +14,18 @@ final class NetworkManager {
     
     private init() {}
     
-    func fetchAppetizers(completion : @escaping(Result<[Food],NetworkError>)->Void) {
+    func fetchData<T : Codable>(type : T.Type) async throws -> T {
         guard let url = URL(string: self.url) else {
-            completion(.failure(.invalidUrl))
-            return
+            throw NetworkError.invalidUrl
         }
+        let (data,_) = try await URLSession.shared.data(from: url)
         
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard error == nil else {
-                completion(.failure(.unabletoComplete))
-                return
-            }
-            guard let response = response as? HTTPURLResponse,response.statusCode == 200 else {
-                completion(.failure(.invalidResponse))
-                return
-            }
-            guard let data else {
-                completion(.failure(.invalidData))
-                return
-            }
-            let decoded = try? JSONDecoder().decode(FoodResponse.self, from: data)
-            guard let decoded else {
-                completion(.failure(.unabletoComplete))
-                return
-            }
-            completion(.success(decoded.request))
-        }.resume()
+        do {
+            let decodedData = try JSONDecoder().decode(T.self, from: data)
+            return decodedData
+        }catch {
+            throw NetworkError.invalidData
+        }
     }
     
     
