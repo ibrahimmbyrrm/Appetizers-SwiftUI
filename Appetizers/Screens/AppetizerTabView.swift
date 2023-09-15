@@ -14,7 +14,7 @@ struct AppetizerTabView: View {
     var body: some View {
         TabView {
             AppetizerListView()
-                .tabItem { Label("Home", image: "house") }
+                .tabItem { Label("Home", systemImage: "house") }
             AccountView()
                 .tabItem { Label("Account", systemImage: "person") }
             OrderView()
