@@ -5,7 +5,7 @@
 //  Created by İbrahim Bayram on 13.09.2023.
 //
 
-import Foundation
+import UIKit
 
 final class NetworkManager {
     
@@ -27,6 +27,4 @@ final class NetworkManager {
             throw NetworkError.invalidData
         }
     }
-    
-    
 }

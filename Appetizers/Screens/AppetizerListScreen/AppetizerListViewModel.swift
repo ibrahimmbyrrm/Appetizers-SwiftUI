@@ -8,10 +8,11 @@
 import Foundation
 import SwiftUI
 
-final class AppetizerListViewModel : ObservableObject {
+@MainActor final class AppetizerListViewModel : ObservableObject {
     
     @Published var appetizers : [Food] = []
     @Published var alertItem : AlertItem?
+    @Published var searchText = ""
     @Published var isLoading : Bool = false
     @Published var selectedAppetizer : Food! {
         didSet {
@@ -19,11 +20,13 @@ final class AppetizerListViewModel : ObservableObject {
         }
     }
     @Published var isShowingDetail = false
-    
+    var searchResults : [Food] {
+        guard !searchText.isEmpty else { return appetizers }
+        return appetizers.filter({$0.name.localizedCaseInsensitiveContains(searchText)})
+    }
 
     func getAppetizerList() {
         isLoading = true
-        
         Task {
             do {
                 appetizers = try await NetworkManager.shared.fetchData(type: FoodResponse.self).request

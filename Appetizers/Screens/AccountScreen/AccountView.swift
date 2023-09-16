@@ -11,7 +11,6 @@ struct AccountView: View {
     
     @StateObject private var viewModel = AccountViewModel()
     
-    
     var body: some View {
         NavigationStack {
             Form {
